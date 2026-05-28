@@ -2,7 +2,10 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
+import os
+import time
 import joblib
+import gdown
 import pandas as pd
 
 from selenium import webdriver
@@ -11,8 +14,10 @@ from selenium.webdriver.chrome.service import Service
 
 from webdriver_manager.chrome import ChromeDriverManager
 
-import time
 
+# ----------------------------
+# FASTAPI APP
+# ----------------------------
 
 app = FastAPI()
 
@@ -31,10 +36,32 @@ app.add_middleware(
 
 
 # ----------------------------
+# GOOGLE DRIVE MODEL DOWNLOAD
+# ----------------------------
+
+MODEL_PATH = "dynamic_pricing_model.pkl"
+
+FILE_ID = "1J5Yg_CExWOlKCJ2hGwPXKgHrEaXKjyuB"
+
+URL = f"https://drive.google.com/uc?id={FILE_ID}"
+
+
+if not os.path.exists(MODEL_PATH):
+
+    print("Downloading model from Google Drive...")
+
+    gdown.download(
+        URL,
+        MODEL_PATH,
+        quiet=False
+    )
+
+
+# ----------------------------
 # LOAD MODEL
 # ----------------------------
 
-model = joblib.load("dynamic_pricing_model.pkl")
+model = joblib.load(MODEL_PATH)
 
 
 # ----------------------------
@@ -95,7 +122,9 @@ def predict(data: PricingInput):
 def get_amazon_price(data: AmazonInput):
 
     driver = webdriver.Chrome(
-        service=Service(ChromeDriverManager().install())
+        service=Service(
+            ChromeDriverManager().install()
+        )
     )
 
     url = data.url

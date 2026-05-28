@@ -6,3 +6,4 @@ joblib
 selenium
 webdriver-manager
 xgboost
+gdown
