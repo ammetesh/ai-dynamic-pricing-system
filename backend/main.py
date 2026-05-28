@@ -11,6 +11,7 @@ import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 
 from webdriver_manager.chrome import ChromeDriverManager
 
@@ -121,10 +122,17 @@ def predict(data: PricingInput):
 @app.post("/amazon-price")
 def get_amazon_price(data: AmazonInput):
 
+    options = Options()
+
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+
     driver = webdriver.Chrome(
         service=Service(
             ChromeDriverManager().install()
-        )
+        ),
+        options=options
     )
 
     url = data.url
@@ -140,12 +148,10 @@ def get_amazon_price(data: AmazonInput):
             "productTitle"
         ).text
 
-
         price = driver.find_element(
             By.CLASS_NAME,
             "a-price-whole"
         ).text
-
 
         try:
 
@@ -158,7 +164,6 @@ def get_amazon_price(data: AmazonInput):
 
             discount = "No Discount"
 
-
         driver.quit()
 
         return {
@@ -166,7 +171,6 @@ def get_amazon_price(data: AmazonInput):
             "price": price,
             "discount": discount
         }
-
 
     except Exception as e:
 
