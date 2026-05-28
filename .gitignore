@@ -1,0 +1,5 @@
+node_modules/
+pycache/
+.ipynb_checkpoints/
+*.pyc
+backend/dynamic_pricing_model.pkl
