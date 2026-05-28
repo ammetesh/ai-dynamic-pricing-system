@@ -40,7 +40,7 @@ function App() {
     try {
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/predict",
+        "https://ai-dynamic-pricing-system.onrender.com/predict",
         {
           base_price: Number(basePrice),
           discount_pct: Number(discount),
@@ -72,7 +72,7 @@ function App() {
   try {
 
     const response = await axios.post(
-      "http://127.0.0.1:8000/amazon-price",
+      "https://ai-dynamic-pricing-system.onrender.com/amazon-price",
       {
         url: amazonUrl
       }
